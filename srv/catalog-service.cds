@@ -1,28 +1,38 @@
 using app.CAP_GTA as Service from '../db/Cap';
 
 
+
 service CatalogService {  
+
  
-entity vehiculos as projection on Service.vehiculos;  
-entity conductor as  projection on Service.conductor;
-entity personal as projection on Service.personal;  
-entity proyectos as  projection on Service.proyectos;
-entity incidentes as projection on Service.incidentes;  
-entity responsables as  projection on Service.responsables;
-entity reporte as projection on Service.reporte;
-entity combustible as projection on Service.combustible;  
-entity fallas_maquinaria as  projection on Service.fallas_maquinaria;
-entity actividades as projection on Service.actividades;  
-entity equipos as  projection on Service.equipos;
-entity maquinaria as projection on Service.maquinaria;  
-entity servicios as  projection on Service.servicios;
-entity repuestos as projection on Service.repuestos;  
-entity registro_tiempo as projection on Service.registro_tiempo;
-entity reporte_maquinaria as projection on Service.reporte_maquinaria;
-entity motor as projection on Service.motor;
-entity electrico as projection on Service.electrico;
-entity suspension as projection on Service.suspension;
-entity transmision as projection on Service.transmision;
-entity usuarios as projection on Service.usuarios;
-entity asignaciones as projection on Service.asignaciones;
+
+    entity equipment as projection on Service.equipment;
+    entity sistemas  as projection on Service.sistemas;
+    entity partes    as projection on Service.partes;
+    entity fallas    as projection on Service.fallas;
+    entity failure   as projection on Service.failure;  
+    entity files     as projection on Service.files;
+    entity items     as projection on Service.items;
+    entity report    as projection on Service.report;
+    entity employee  as projection on Service.employee;
+    entity proyOrder as projection on Service.proyOrder;
+    entity grafOrder as projection on Service.grafOrder;
+    entity operMaint  as projection on Service.operMaint;
+    entity timeReportProy as projection on Service.timeReportProy;
+    entity NotificacionesEnviadas as projection on Service.NotificacionesEnviadas;
+    entity NotificacionesEnviadasTiempos as projection on Service.NotificacionesEnviadasTiempos;
+    entity Proyects as projection on Service.Proyects;
+    entity grafProyects as projection on Service.grafProyects;
+    entity ProyectsActivities as projection on Service.ProyectsActivities;
+    // entity timeReportMainProyects as projection on Service.timeReportMainProyects;
+
+
+
+
+
+
+
+
+
+
 }

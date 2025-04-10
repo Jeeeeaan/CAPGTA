@@ -1,361 +1,318 @@
 namespace app.CAP_GTA;
 
+//  Aquí se almacenan los equipos - DATOS DE API
+entity equipment {
+    key inventoryNumber          : String(35); // Nùmero de inventario (Placa/Codigo PSL)
+        assetManufacturerName    : String(30); // Marca - características del equipo
+        manufacturerPartTypeName : String(20); // Modelo del equipo
+        functionalLocation       : String(40); // Ubicaciòn tècnica
+        equipment                : String(25); // Nùmero de equipo en el sistema
+        technicalObjectType      : String(18); // Tipo de objeto tècnico
+        catalog                  : String(8); // Perfil de catálogo
+        partner                  : Association to employee; // Nùmero de personal responsable
+        puestotrabajo            : String(10); // reporttime dato quemado "maquina"
+        catalogProfile           : Association to many sistemas
+                                       on catalogProfile.catalogProfile = $self; // Perfil de catalogo FOREING KEY
+        report                   : Association to many report
+                                       on report.equipment = $self;
+        failure                  : Association to many failure
+                                       on failure.equipo = $self;
+        items                    : Association to many items
+                                       on items.equipment = $self;
+        timereport               : Association to many timeReportProy
+                                       on timereport.equipment = $self;
+        // timeReportMain           : Association to many timeReportMainProyects
+        //                                on timeReportMain.equipment = $self;
 
-entity vehiculos {
-    key placa                        : String(10) not null;
-        numero_interno               : Integer;
-        fecha                        : Date;        
-        kilometraje_inicial          : Integer;
-        kilometraje_final            : Integer;  
-        tipo_motor                   : String(50);
-        tipo_servicio                : String(50);
-        marca                        : String(50);                   
-        observaciones                : String(50);
-        status                       : Boolean;                   
-        conductor                    : Association to conductor
-                                          on conductor.vehiculos = $self; 
-        reporte                      : Association to many reporte
-                                          on reporte.vehiculos = $self;
-        motor                        : Association to many motor
-                                          on motor.vehiculos = $self;
-        electrico                    : Association to many electrico
-                                          on electrico.vehiculos = $self;                                        
-        suspension                   : Association to many suspension
-                                          on suspension.vehiculos = $self;
-        transmision                  : Association to many transmision
-                                          on transmision.vehiculos = $self;
-        registro_tiempo              : Association to registro_tiempo;
-                                                                          
-                                          
 
 }
 
-  @assert.unique : {
-   unique_vehiculos: [ vehiculos ]
-}
+// Aquí se almacenan los datos de los SISITEMAS del equipo - DATOS DE API
+entity sistemas {
+    key ID             : String(10);
+        posicion       : String(6); // Contador que identifica el sistema
+        sitema         : String(9); //Siglas que identifican el sistema
+        descripcion    : String(20); // Descripción
+        failure        : Association to many failure
+                             on failure.sistemas = $self;
+        partes         : Association to many partes
+                             on partes.maintNotifObjPartCodeGroup = $self; // Siglas que identifican el sistema
+        fallas         : Association to many fallas
+                             on fallas.maintNotifOvwDamageCodeGroup = $self;
+        catalogProfile : Association to equipment; // Perfil de catálogo a consultar
 
-
-entity conductor {
-    key documento                : Integer not null;        
-        nombre                   : String(50);
-        apellido                 : String(50);
-        telefono                 : Integer;
-        email                    : String(45);
-        direccion                : String(45);
-        observacion              : String(45);
-        ciudad                   : String(50);
-        status                   : Boolean;
-        vehiculos                : Association to vehiculos;        
-        reporte_maquinaria       : Association to many reporte_maquinaria
-                                     on reporte_maquinaria.conductor = $self;                                                                                                  
-        maquinaria               : Association to many maquinaria
-                                     on maquinaria.conductor = $self;
-}
-
-entity reporte {
-    key ID                    : UUID;              
-        fecha_inicio          : Date;        
-        kilometraje_actual    : Integer;
-        nombre_funcionario    : String(50);    
-        ubicacion             : String(50);
-        ciudad                : String(50);
-        aceite                : String(50);
-        refrigerante          : String(50);
-        combustible           : String(50);
-        luz_delantera         : String(50);
-        luz_trasera           : String(50);      
-        llantas               : String(50);
-        cinturon_seguridad    : String(50);
-        equipo_carretera      : String(50);
-        freno_parqueo         : String(50);
-        frenos                : String(50);
-        vidrios               : String(50);
-        carretera_kit         : String(50);
-        adjunto               : String(50);
-        status                : Boolean; 
-        vehiculos             : Association to vehiculos;      
-                                                            
-}
-
-// las siguientes son los sistemas para reporte de fallas //
-entity motor {
-    key ID                : UUID;        
-        fuga_aceite       : String(50);
-        ruido_motor       : String(50);                          
-        desajuste         : String(50);
-        exeso_humo        : String(50); 
-        dano              : String(50);
-        causa             : String(50);    
-        status            : Boolean; 
-        vehiculos         : Association to vehiculos;                                                         
-}
-
-entity electrico {
-    key ID                : UUID;           
-        corto             : String(50);
-        pastas_rotas      : String(50);                          
-        plumillas         : String(50);
-        Bateria           : String(50);
-        pito              : String(50);
-        luces             : String(50);
-        dano              : String(50);
-        causa             : String(50);       
-        status            : Boolean;       
-        vehiculos         : Association to vehiculos;   
-}
-
-entity suspension {
-    key ID                : UUID;           
-        amortiguadores    : String(50);
-        hoja_muelle       : String(50);                          
-        bujes_barra       : String(50);
-        tijeras           : String(50);
-        terminales        : String(50);
-        dano              : String(50);
-        causa             : String(50);       
-        status            : Boolean;       
-        vehiculos         : Association to vehiculos;         
-}
-
-entity transmision {
-    key ID                : UUID;           
-        cardan            : String(50);
-        caja_cambios      : String(50);                          
-        palanca_cambios   : String(50);
-        diferencial       : String(50);
-        ejes              : String(50);
-        dano              : String(50);
-        causa             : String(50);       
-        status            : Boolean;       
-        vehiculos         : Association to vehiculos;  
-    
-}
-
-//----------------------------------------//
-
-entity reporte_maquinaria {
-    key ID                   : UUID;            
-        fecha                : Date;        
-        cabina               : String(50);
-	    motor                : String(50);
-	    pluma                : String(50);
-	    brazo                : String(50);
-	    cucharon             : String(50);
-	    estabilizador        : String(50);
-	    cilindro             : String(50);
-        status               : Boolean;
-        maquinaria           : Association to maquinaria; 
-        conductor            : Association to conductor; 
-        
-}
-
-entity maquinaria  {
-    key ID                         : String(10) not null;            
-        tipo                       : String(50);
-        fecha                      : Date;
-        stock                      : Integer;  
-        lubricante_tipo            : String(50);
-        medida                     : String(50);
-        cantidad                   : Integer;
-        status                     : Boolean;
-        conductor                  : Association to conductor; 
-        reporte_maquinaria         : Association to many reporte_maquinaria
-                                        on reporte_maquinaria.maquinaria = $self;   
-        fallas_maquinaria          : Association to many fallas_maquinaria
-                                        on fallas_maquinaria.maquinaria = $self;
-        registro_tiempo            : Association to registro_tiempo;
-        actividades                : Association to many actividades
-                                        on actividades.maquinaria = $self;                                        
-                                                                                    
-    // proyecto -> grafo -> actividades -> personal & maquinaria -> reporte de tiempos //                                                    
-}
-
-entity fallas_maquinaria {
-    key ID                   : UUID;            
-        fecha                : Date;        
-        cabina               : String(50);
-	    motor                : String(50);
-	    pluma                : String(50);
-	    brazo                : String(50);
-	    cucharon             : String(50);
-	    estabilizador        : String(50);
-	    cilindro             : String(50);
-        status               : Boolean;
-        maquinaria           : Association to maquinaria;         
-                                                                   
-}
-
-entity equipos  {
-    key ID                   : String(10) not null;            
-        tipo                 : String(50);
-        marca                : String(50);
-        fecha                : Date;
-        contador             : Integer;  
-        tipo_elementos       : String(50);
-        elementos_desgaste   : String(50);
-        proyecto             : String(50);
-        status               : Boolean;
-        registro_tiempo      : Association to registro_tiempo;
-                                
-        
-}
-
-entity registro_tiempo {
-    key ID                   : UUID;            
-        fecha                : Date;
-        hora                 : DateTime;
-        observaciones        : String;
-        adjunto              : String;
-        firma                : String;
-        status               : Boolean;
-        personal             : Association to many personal
-                                on personal.registro_tiempo = $self;
-        maquinaria           : Association to many maquinaria
-                                on maquinaria.registro_tiempo = $self;
-        vehiculos            : Association to many vehiculos
-                                on vehiculos.registro_tiempo = $self;
-        equipos              : Association to many equipos
-                                on equipos.registro_tiempo = $self;
-
-        //proyecto -> grafo -> actividades -> personal & maquinaria -> reporte de tiempos //                                                                               
 
 }
 
-entity personal {
-    key documento            : Integer not null;        
-        nombre               : String(50);
-        apellido             : String(50);
-        telefono             : Integer;
-        email                : String(45);
-        direccion            : String(45);        
-        ciudad               : String(50);
-        sede                 : String(50);
-        status               : Boolean; 
-        registro_tiempo      : Association to registro_tiempo;
-        actividades          : Association to many actividades
-                                on actividades.personal = $self;                                        
+// Aquí se almacenan las PARTES de los sistemas del equipo - DATOS DE API
+entity partes {
+    key ID                            : String(10);
+        maintNotifObjPartCode         : String(4); // Id de la parte del objeto
+        maintNotifObjPartCtlgCodeText : String(40); // Descripción de la parte del objeto
+        failure                       : Association to many failure
+                                            on failure.partes = $self;
+        maintNotifObjPartCodeGroup    : Association to sistemas; // Tipo de equipo
 
-       //proyecto -> grafo -> actividades -> personal & maquinaria -> reporte de tiempos //                                                                                
-       
-}
-
-entity actividades {
-    key ID                     : UUID;            
-        grafo                  : String(50);
-        descripcion_grafo      : String(50);
-        codigo_sap_actividad   : String(50);        
-        descripcion_actividad  : String(50);
-        fecha_inicio           : Date;   //informativo //
-        fecha_final            : Date;   //informativo //
-        clasificacion          : String(50); //lista desplejable (persona, equipo, transporte)//
-        puesto_trabajo_sap     : String(50);
-        status                 : Boolean;
-        personal               : Association to personal;
-        maquinaria             : Association to maquinaria;
-        proyectos              : Association to many proyectos
-                                   on proyectos.actividades = $self;
-       
-
-            //proyecto -> grafo -> actividades -> personal & maquinaria -> reporte de tiempos //  
-}
-
-entity proyectos {
-    key ID              : UUID;  
-        id_sap          : Integer;      
-        nombre          : String(50);
-        emplazamiento   : String(50);
-        fecha_inicio    : Date;                     //Solo informativo //
-        fecha_fin       : Date;                     //solo informativo //  
-        status          : Boolean;
-        actividades     : Association to actividades;
-                                        
-        
-        //proyecto -> grafo -> actividades -> personal & maquinaria -> reporte de tiempos //                                                                               
-                                         
-} 
-
-
-
-//Esta entidad reporta fallas o problemas en los equipos durante la operación del proyecto//
-entity incidentes {
-    key ID               : UUID;        
-        tipo             : String(50);        
-        contacto         : Integer;
-        fecha_inicio     : Date;
-        fecha_fin        : Date;
-        ubicacion        : String(50);
-        ciudad           : String(50);
-        observaciones    : String(50);    
-        status           : Boolean;                                                    
 
 }
 
-// Esta entidad almacena los datos de las personas responsables que hacen las autorizaciones //
-entity responsables {
-    key ID                   : Integer not null;              
-        operador             : String(50);
-        ingeniero_residente  : String(50);
-        estadistica_obra     : String(50);
-        ciudad               : String(50);
-        ubicacion            : String(50);
-        observaciones        : String(50);    
-        status               : Boolean;                                                      
+
+// Aquí se almacenan las FALLAS en el equipo - DATOS DE API
+entity fallas {
+    key ID                             : String(10); //@(Core.Computed: true);
+        maintNotifOvwDamageCode        : String(4); // Id del daño
+        maintNotifOvwDamageCtlgCodeTxt : String(40); // Texto del daño
+        failure                        : Association to many failure
+                                             on failure.fallas = $self;
+        maintNotifOvwDamageCodeGroup   : Association to sistemas; // Tipo de equipo
+
+
 }
 
-// Esta entidad almacena los datos de los consumos de combustible en las maquinas, vehículos y equipos//
-entity combustible {
-    key ID                : UUID;           
-        horometro         : Integer;
-        kilometraje       : Integer;
-        cantidad          : Integer;  
-        numero_vale       : Integer;
-        tipo              : String(50);          
-        observaciones     : String(50);    
-        status            : Boolean;
-                                                           
-} 
 
-entity servicios {
-    key ID                   : Integer not null;           
-        tipo                 : String(50);
-        codigo               : Integer;
-        fecha                : Date;
-        hora                 : DateTime;
-        stock                : Integer;  
-        precio               : Double;      
-        status               : Boolean;              
-                                                         
+// Aquí se almacenan las fallas *-* Datos desde la aplicacion *-*
+
+entity failure {
+    key ID          : UUID;
+        fecha       : DateTime;
+        comentarios : String(200);
+        sistema     : String(40);
+        parte       : String(200);
+        falla       : String(200);
+        status      : Boolean;
+        equipo      : Association to equipment;
+        sistemas    : Association to sistemas;
+        partes      : Association to partes;
+        fallas      : Association to fallas;
+        files       : Association to many files
+                          on files.failure = $self;
+
 }
 
-entity repuestos {
-    key ID                   : UUID;            
-        categoria            : String(50);
-        nombre               : String(50);      
-        fecha                : Date;
-        stock                : Integer;  
-        precio               : Double;    
-        status               : Boolean;
-                                                                 
+entity files {
+
+
+    key ID              : UUID;
+
+        @Core.MediaType  : mediaType
+        @Core.Computed   : false
+        virtual content : LargeBinary;
+
+        @Core.IsMediaType: true
+        mediaType       : String;
+        fileName        : String(40);
+        ID_bucket       : String(40);
+        failure         : Association to failure;
+        report          : Composition of many report
+                              on report.files = $self;
+
+
 }
 
-//login de la app //
-entity usuarios {
-    key ID                   : UUID;           
-        fecha                : Date;
-        hora                 : Date;
-        kilometraje          : Integer;
-        observaciones        : String;
-        adjunto              : String;
-        status               : Boolean;                                                                                                 
+
+// Aquí se almacenan de selección para el reporte preoperacional *-* Datos internos
+entity items {
+    key ID          : String(10);
+        equipment   : Association to equipment;
+        descripcion : String(35);
+        criterio1   : String(35);
+        criterio2   : String(35);
+        criterio3   : String(35);
+        report      : Association to report;
+
+
 }
 
-entity asignaciones {
-    key ID                   : UUID;           
-        grafo                : String(50);
-        id_actividad         : String(50);
-        fecha_inicio         : Date;
-        fecha_fin            : Date;
-        adjunto              : String(50);
-        proyecto             : String(50);
-        status               : Boolean;                                                                                            
+// Aqui se almacenan los reportes preoperacionales *-* Datos desde la aplicacion *-*
+entity report {
+    key ID                                : UUID;
+        fecha                             : DateTime;
+        kilometraje_Horometro             : Integer;
+        ubicacion                         : String(35);
+        aceite_y_combustible              : String(35);
+        liquido_refrigerante              : String(35);
+        nivel_agua                        : String(35);
+        liquido_frenos                    : String(35);
+        tapa_radiador_tanque              : String(35);
+        Cables_correas_mangueras          : String(35);
+        Bateria_cables_bornes             : String(35);
+        suspencion_gatos_muelles_anclajes : String(35);
+        luces_bajas                       : String(35);
+        luces_altas                       : String(35);
+        luces_internas                    : String(35);
+        direccionales_frente              : String(35);
+        direccionales_atras               : String(35);
+        faros_freno                       : String(35);
+        faros_exploradoras                : String(35);
+        luces_parqueo                     : String(35);
+        extintor                          : String(35);
+        gato_cruceta_copa_perno           : String(35);
+        linterna_lamparas                 : String(35);
+        kit_herramientas_completa         : String(35);
+        kit_derrames_completo             : String(35);
+        cables_arranque                   : String(35);
+        senalizacion                      : String(35);
+        estado_llantas_rines              : String(35);
+        llantas_repuesto_fijas            : String(35);
+        labrado_llantas                   : String(35);
+        espejos_laterales                 : String(35);
+        parabrisas_escobillas             : String(35);
+        puertas_ventanas                  : String(35);
+        latoneria_pintura                 : String(35);
+        vidrios                           : String(35);
+        inyectores_agua_parabrisas        : String(35);
+        antena_gps_otros                  : String(35);
+        identificacion_carga              : String(35);
+        aire_acondicionado                : String(35);
+        asientos_apoya_cabezas_tapiceria  : String(35);
+        elevavidrios_manivelas            : String(35);
+        cinturones_seguridad              : String(35);
+        puertas                           : String(35);
+        bocina_pito                       : String(35);
+        alarma_retroceso                  : String(35);
+        botiquin                          : String(35);
+        asa                               : String(35);
+        placas                            : String(35);
+        cuerpo                            : String(35);
+        quijadas_laterales                : String(35);
+        alineamiento                      : String(35);
+        mantenimiento                     : String(35);
+        comentarios                       : String(35);
+        status                            : Boolean;
+        equipment                         : Association to equipment;
+        files                             : Association to files;
+        items                             : Association to many items
+                                                on items.report = $self;
+
 }
+
+// Aquí se almacenan los datos del empleado responsable - DATOS DE API
+entity employee {
+    key pernr                  : String(8); // Id del empleado en SAP
+        bukrs                  : String(4); // Sociedad
+        werks                  : String(4); // Centro
+        persk                  : String(2); // Subdivisión del personal
+        sname                  : String(30); // Nombres
+        ename                  : String(40); // Nombre completo
+        puestotrabajo          : String(10); // reporttime dato quemado "Persona"
+        equipment              : Association to many equipment
+                                     on equipment.partner = $self;
+        timereport             : Association to many timeReportProy
+                                     on timereport.employee = $self;
+        // timeReportMainProyects : Association to many timeReportMainProyects
+        //                              on timeReportMainProyects.employee = $self;
+
+
+}
+
+
+entity proyOrder {
+    key serviceOrder                 : String(11); // Id orden de servicios
+        purchaseOrderByCustomer      : String(35); // Referencia externa
+        serviceOrderDescription      : String(35); // descripcion del servicio
+        soldToParty                  : String(10); // id del cliente
+        serviceReferenceEquipment    : String(25); // id del equipo
+        serviceRefFunctionalLocation : String(40); //ubicacion tecnica
+        tipoProyecto                 : String(40);
+        grafOrder                    : Association to many grafOrder
+                                           on grafOrder.serviceDocId = $self;
+
+}
+
+entity grafOrder {
+
+    key aufnr            : String(20); // Id, muestra la app
+        serviceDocItemId : String(60); // posicion
+        serviceDocId     : Association to proyOrder; // id orden de servicio
+        operMain         : Association to many operMaint
+                               on operMain.maintenanceOrder = $self;
+
+}
+
+entity operMaint {
+    key ID                         : String(30);
+        maintenanceOrderOperation  : String(4); // orden de operacion
+        operationDescription       : String(40); // descripcion
+        operationPersonResponsible : String(8); // Persona responsable
+        center                     : String(10); // centro de trabajo
+        puestotrabajo              : String(10); // api nueva
+        plant                      : String(8); // ubicacion (colombia, peru, chile)
+        maintenanceOrder           : Association to grafOrder; // orden de mtto filtro
+        timereport                 : Association to many timeReportProy
+                                         on timereport.report = $self;
+
+
+}
+
+entity timeReportProy { //hanna reporte
+    key ID                  : UUID;
+        date                : Date;
+        initialTime         : Time;
+        finalTime           : Time;
+        personas            : String(60); // descripción de list picker
+        equipos             : String(60); // descripción de list picker
+        comments            : String(40); // comentarios
+        Tiempo              : String(10); // resta de horas
+        image               : String(40);
+        IsFinalConfirmation : Boolean; // confirmacion
+        equipment           : Association to equipment;
+        employee            : Association to employee;
+        report              : Association to operMaint;
+}
+
+entity NotificacionesEnviadas {
+    key NotificationId : String(50);
+        Timestamp      : DateTime @default: current_timestamp;
+}
+
+entity NotificacionesEnviadasTiempos {
+    key NotificationTiemposId : String(50);
+        Timestamp             : DateTime @default: current_timestamp;
+}
+
+entity Proyects {
+    key PspidEdit    : String(11); // Id orden de servicios
+        Post1        : String(35); // descripcion del proyecto
+        Werks        : String(10); // id del cliente
+        tipoProyecto : String(40);
+        grafProyects : Association to many grafProyects
+                           on grafProyects.ProjectExternalID = $self;
+}
+
+entity grafProyects {
+
+    key ProjectNetwork            : String(60);
+        ProjectNetworkDescription : String(60); // descripcion
+        ProjectExternalID         : Association to Proyects; // Id, muestra la app
+        ProyectsActivities        : Association to many ProyectsActivities
+                                        on ProyectsActivities.ProjectNetwork = $self;
+}
+
+entity ProyectsActivities {
+
+    key ID                         : UUID;
+        NetworkActivity            : String(60);
+        NetworkActivityDescription : String(60); // descripcion
+        ProjectNetwork             : Association to grafProyects; // Id, muestra la app
+        // timeReportMainProyects     : Association to many timeReportMainProyects
+        //                                  on timeReportMainProyects.report = $self;
+
+}
+
+// entity timeReportMainProyects { //hanna reporte
+//     key ID                  : UUID;
+//         date                : Date;
+//         initialTime         : Time;
+//         finalTime           : Time;
+//         personas            : String(60); // descripción de list picker
+//         equipos             : String(60); // descripción de list picker
+//         transporte          : String(60);
+//         comments            : String(40); // comentarios
+//         Tiempo              : String(10); // resta de horas
+//         image               : String(40);
+//         IsFinalConfirmation : Boolean; // confirmacion
+        // equipment           : Association to equipment;
+        // employee            : Association to employee;
+        // report              : Association to ProyectsActivities
+
+// }

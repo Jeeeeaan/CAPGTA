@@ -52,13 +52,13 @@ modules:
       keep-existing-routes: true
       disk-quota: 256M
       memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
+   # requires:
+     # - name: srv-api
+       # group: destinations
+       # properties:
+         # name: srv-api # must be used in xs-app.json as well
+         # url: ~{srv-url}
+          #forwardAuthToken: true
 
 resources:
   # services extracted from CAP configuration
